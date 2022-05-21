@@ -13,6 +13,7 @@ let imgPorta5;
 let imgPorta6;
 let imgBase1;
 let imgBase2;
+let imgBase3;
 let imgJanela1;
 let imgJanela2;
 let imgJanela3;
@@ -38,7 +39,9 @@ function preload() {
   imgPorta4 = loadImage("data//doors/ds_1.png");
   imgPorta5 = loadImage("data//doors/ds_2.png");
   imgPorta6 = loadImage("data//doors/ds_3.png");
-  imgBase1 = loadImage("data/b1x1.png");
+  imgBase1 = loadImage("data/bases/b1.png");
+  imgBase2 = loadImage("data/bases/b2.png");
+  imgBase3 = loadImage("data/bases/b3.png");
   imgJanela1 = loadImage("data/windows/wb_1.png");
   imgJanela2 = loadImage("data/windows/wb_2.png");
   imgJanela3 = loadImage("data/windows/wb_3.png");
@@ -164,6 +167,20 @@ function setup() {
     {
       nome: "Botanico",
       imagem: imgBase1,
+      estilo: "Barroco",
+      altura: "1",
+      largura: "2",
+    },
+    {
+      nome: "Botanico",
+      imagem: imgBase2,
+      estilo: "Barroco",
+      altura: "1",
+      largura: "2",
+    },
+    {
+      nome: "Botanico",
+      imagem: imgBase3,
       estilo: "Barroco",
       altura: "1",
       largura: "2",
