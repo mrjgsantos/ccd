@@ -11,8 +11,15 @@ let randomBase = [];
 let randomJanela = [];
 
 let tamanho = Math.round(5 + Math.random() * 10);
-let randomPosX;
-let randomAndares;
+let randomPosX = [];
+
+let maxAndares = 10;
+let maxWidthBase = 75;
+let nAndares = [];
+let randomScale = [];
+
+let nTorres;
+let paisagem = [];
 
 function preload() {
   loadJSON("janelas.json", loadJanelas);
@@ -50,61 +57,129 @@ async function loadBases(data) {
 
 function setup() {
   imageMode(CORNER);
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, 1400);
 
-  randomAndares = int(random(2, 10));
+  nTorres = int(random(2, 10));
 
-  for (let i = 0; i < randomAndares; i++) {
-    randomJanela[i] = random(janelas);
-    randomPorta[i] = random(portas);
-    randomBase[i] = random(bases);
-
-    randomPosX = int(random(0, width - randomBase[i].imagem.width));
-    /**********************************************************/
-    posXPorta[i] = int(
-      random(
-        randomPosX,
-        randomPosX + randomBase[i].imagem.width / round(tamanho)
-      )
-    );
-    /**********************************************************/
-    strokeWeight(5);
-    posXJanela[i] = random(randomPosX, randomPosX + randomBase[i].imagem.width);
-    console.log("PosX= " + posXPorta[i]);
-    console.log("min= " + randomPosX);
-    console.log(
-      "max= " + int(randomPosX + randomBase[i].imagem.width / tamanho)
-    );
-    console.log("  ");
+  for (let x = 0; x < nTorres; x++) {
+    nAndares[x] = int(random(2, maxAndares));
+    randomPosX[x] = int(random(0, width - maxWidthBase));
+    randomScale[x] = Math.round(5 + Math.random() * 10);
+    paisagem[x] = []; // create nested array
+    for (let y = 0; y < maxAndares + 2; y++) {
+      paisagem[x][y];
+    }
   }
+
+  for (let x = 0; x < nTorres; x++) {
+    for (let y = 0; y < nAndares[x]; y++) {
+      paisagem[x][y] = 1;
+    }
+  }
+
+  for (let x = 0; x < nTorres; x++) {
+    paisagem[x][nAndares + 1] = randomPosX[x];
+    paisagem[x][nAndares + 2] = randomScale[x];
+
+    for (let i = 0; i < nAndares[i]; i++) {
+      randomJanela[i] = random(janelas);
+      randomPorta[i] = random(portas);
+      randomBase[i] = random(bases);
+
+      //randomPosX = int(random(0, width - randomBase[i].imagem.width));
+
+      posXPorta[i] = round(random(9.4));
+
+      strokeWeight(5);
+      // posXJanela[i] = random(randomPosX, randomPosX + randomBase[i].imagem.width);
+      console.log("PosX= " + posXPorta[i]);
+      console.log("min= " + randomPosX);
+      console.log(
+        "max= " + int(randomPosX + randomBase[i].imagem.width / tamanho)
+      );
+      console.log("  ");
+    }
+  }
+  print(paisagem);
 }
 
 function draw() {
   background(220);
 
-  for (let i = 0; i < randomAndares; i++) {
+  for (let x = 0; x < nTorres; x++) {
+    for (let i = 0; i < nAndares[x]; i++) {
+      const baseWidth = round(randomBase[i].imagem.width / tamanho);
+      const baseHeight = round(randomBase[i].imagem.height / tamanho);
+      const portaWidth = round(randomPorta[i].imagem.width / tamanho);
+      const portaHeight = round(randomPorta[i].imagem.height / tamanho);
+
+      //Base
+      image(
+        randomBase[i].imagem,
+        randomPosX[x],
+        height - (i + 1) * baseHeight,
+        baseWidth,
+        baseHeight
+      );
+      print(randomBase[i].imagem.height);
+
+      const availableWidth =
+        baseWidth - (randomPorta[i].imagem.width / tamanho) * 2;
+
+      //porta
+      image(
+        randomPorta[i].imagem,
+        randomPosX[x] +
+          randomPorta[i].imagem.width / tamanho +
+          (availableWidth / 10) * posXPorta[i], // srebelo: removed random(randomPosX, randomPosX,randomPosX + randomBase[i].imagem.width / round(tamanho))
+        height - baseHeight * i - portaHeight, // @srebelo: removed  (- randomPorta[i].imagem.height)
+
+        randomPorta[i].imagem.width / tamanho,
+        randomPorta[i].imagem.height / tamanho
+      );
+
+      //Janela
+      image(
+        randomJanela[i].imagem,
+        posXJanela[i],
+        i * randomJanela[i].imagem.height + randomJanela[i].imagem.height * 0.1,
+        randomJanela[i].imagem.width / tamanho,
+        randomJanela[i].imagem.height / tamanho
+      );
+    }
+  }
+  /*
+  for (let i = 0; i < nAndares[1]; i++) {
+    // srebelo: added
+    const baseWidth = round(randomBase[i].imagem.width / tamanho);
+    const baseHeight = round(randomBase[i].imagem.height / tamanho);
+    const portaWidth = round(randomPorta[i].imagem.width / tamanho);
+    const portaHeight = round(randomPorta[i].imagem.height / tamanho);
+
     //Base
     image(
       randomBase[i].imagem,
-      randomPosX,
-      i * randomBase[i].imagem.height,
-      int(randomBase[i].imagem.width / tamanho),
-      int(randomBase[i].imagem.height / tamanho)
+      randomPosX[1],
+      height - (i + 1) * baseHeight,
+      baseWidth,
+      baseHeight
     );
+    print(randomBase[i].imagem.height);
 
-    //Porta
-    /***************************** */
+    const availableWidth =
+      baseWidth - (randomPorta[i].imagem.width / tamanho) * 2;
+
+    //porta
     image(
       randomPorta[i].imagem,
-      random(
-        randomPosX,
-        randomPosX + randomBase[i].imagem.width / round(tamanho)
-      ),
-      (i + 1) * randomPorta[i].imagem.height - randomPorta[i].imagem.height,
+      randomPosX[1] +
+        randomPorta[i].imagem.width / tamanho +
+        (availableWidth / 10) * posXPorta[i], // srebelo: removed random(randomPosX, randomPosX,randomPosX + randomBase[i].imagem.width / round(tamanho))
+      height - baseHeight * i - portaHeight, // @srebelo: removed  (- randomPorta[i].imagem.height)
+
       randomPorta[i].imagem.width / tamanho,
-      randomPorta[i].imagem.width / tamanho
+      randomPorta[i].imagem.height / tamanho
     );
-    /********************************** */
 
     //Janela
     image(
@@ -114,8 +189,8 @@ function draw() {
       randomJanela[i].imagem.width / tamanho,
       randomJanela[i].imagem.height / tamanho
     );
-    console.log("Array de PosX no draw= " + posXPorta);
-  }
+  } */
+  // noLoop(); // srebelo: DEBUG
 }
 /*
 function keyPressed() {
