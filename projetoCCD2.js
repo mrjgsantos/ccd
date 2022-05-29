@@ -7,13 +7,13 @@ let andares = [];
 
 let posXPortas = [];
 let posYPortas = [];
-let posXJanela = [];
+let posXJanelas = [];
+let posYJanelas = [];
 
 let randomPorta = [];
 let randomBase = [];
 let randomJanela = [];
 
-//let tamanho = Math.round(5 + Math.random() * 10);
 let tamanho = [];
 let randomPosX = [];
 
@@ -62,7 +62,7 @@ function setup() {
   imageMode(CORNER);
   createCanvas(windowWidth, 1400);
 
-  nTorres = int(random(2, 25));
+  nTorres = int(random(2, 35));
 
   for (let x = 0; x < nTorres; x++) {
     nAndares[x] = int(random(2, maxAndares));
@@ -88,34 +88,20 @@ function setup() {
       const baseHeight = round(randomBase[y].imagem.height / tamanho[x]);
       const portasWidth = round(randomPorta[y].imagem.width / tamanho[x]);
       const portasHeight = round(randomPorta[y].imagem.height / tamanho[x]);
+      const janelasWidth = round(randomJanela[y].imagem.width / tamanho[x]);
+      const janelasHeight = round(randomJanela[y].imagem.height / tamanho[x]);
 
       const availableWidth =
         baseWidth - (randomPorta[y].imagem.width / tamanho[x]) * 2;
-      //randomPosX = int(random(0, width - randomBase[i].imagem.width));
       print("Available" + availableWidth);
       posXPortas[y] = portasWidth + (availableWidth / 10) * round(random(9.4));
       posYPortas[y] = height - baseHeight * y - portasHeight;
-      // print(x);
-      /*constructor(
-        posX,
-        posY,
-        baseWidth,
-        baseHeight,
-        temTelhado,
-        temPorta,
-        nPortas,
-        posXPortas,
-        posYPortas,
-        nJanelas,
-        posJanelas,
-        imgsJanelas,
-        imgsPortas,
-        imgBase,
-        imgTelhado
-      )*/
+      posXJanelas[y] =
+        janelasWidth + (availableWidth / 10) * round(random(9.4));
+      posYJanelas[y] = height - (y + 1) * baseHeight + 0.1 * baseHeight;
+
       let andar = new Andar(
         randomPosX[x],
-        // height - (y + 1) * baseHeight,
         height - (y + 1) * baseHeight,
         baseWidth,
         baseHeight,
@@ -127,7 +113,10 @@ function setup() {
         portasWidth,
         portasHeight,
         1,
-        posXJanela[0],
+        posXJanelas[y],
+        posYJanelas[y],
+        janelasWidth,
+        janelasHeight,
         randomJanela[y].imagem,
         randomPorta[y].imagem,
         randomBase[y].imagem,
@@ -135,12 +124,9 @@ function setup() {
       );
       andares.push(andar);
       paisagem[x][y] = andar;
-      // print("X= " + x + "Pos= " + randomPosX[x]);
-      //print("nTorres" + nTorres);
     }
   }
   print(paisagem);
-  //print(nTorres);
 }
 function draw() {
   background(220);
@@ -167,7 +153,10 @@ class Andar {
     portaWidth,
     portaHeight,
     nJanelas,
-    posJanelas,
+    posXJanela,
+    posYJanela,
+    janelaWidth,
+    janelaHeight,
     imgsJanelas,
     imgsPortas,
     imgBase,
@@ -185,47 +174,37 @@ class Andar {
     this.portaWidth = portaWidth;
     this.portaHeight = portaHeight;
     this.nJanelas = nJanelas;
-    this.posJanelas = posJanelas;
+    this.posXJanela = posXJanela;
+    this.posYJanela = posYJanela;
+    this.janelaWidth = janelaWidth;
+    this.janelaHeight = janelaHeight;
     this.imgsJanelas = imgsJanelas;
     this.imgsPortas = imgsPortas;
     this.imgBase = imgBase;
     this.imgTelhado = imgTelhado;
   }
 
-  desenha() {
-    // image(randomBase[0], 20, 55, 55);
-    image(randomBase[0].imagem, 20, 20);
-  }
-
   drawAndar() {
-    //const baseWidth = round(randomBase[i].imagem.width / tamanho);
-    //const baseHeight = round(randomBase[i].imagem.height / tamanho);
-    //const availableWidth =baseWidth - (randomPorta[i].imagem.width / tamanho) * 2;
-
     //Base
     image(this.imgBase, this.posX, this.posY, this.baseWidth, this.baseHeight);
-    //print(randomBase[i].imagem.height);
 
     //porta
     image(
       this.imgsPortas,
       this.posX + this.posXPorta,
-      //height - baseHeight * i - portaHeight,
       this.posYPorta,
-      //randomPorta[i].imagem.width / tamanho,
-      //randomPorta[i].imagem.height / tamanho,
       this.portaWidth,
       this.portaHeight
     );
     print("PosXPorta" + this.posXPorta);
-    /*
-    //Janela
+
+    //janela
     image(
-      imgsJanelas,
-      posXJanela[i],
-      i * randomJanela[i].imagem.height + randomJanela[i].imagem.height * 0.1,
-      randomJanela[i].imagem.width / tamanho,
-      randomJanela[i].imagem.height / tamanho
-    );*/
+      this.imgsJanelas,
+      this.posX + this.posXJanela,
+      this.posYJanela,
+      this.janelaWidth,
+      this.janelaHeight
+    );
   }
 }
