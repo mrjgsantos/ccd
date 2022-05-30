@@ -8,13 +8,12 @@ let andares = [];
 let posXPortas = [];
 let posYPortas = [];
 
-let posXJanelas = [];
-let posYJanelas = [];
 let posJanelas = [];
 
 let randomPorta = [];
 let randomBase = [];
 let randomJanela = [];
+let randomTelhado = [];
 
 let scale = [];
 let randomPosX = [];
@@ -30,6 +29,7 @@ function preload() {
   loadJSON("janelas.json", loadJanelas);
   loadJSON("portas.json", loadPortas);
   loadJSON("bases.json", loadBases);
+  loadJSON("telhados.json", loadTelhados);
 }
 
 //Load Janelas
@@ -59,18 +59,27 @@ async function loadBases(data) {
   }
 }
 
+//Load Telhados
+async function loadTelhados(data) {
+  for (const telhado of Object.keys(data)) {
+    let img = await loadImage(data[telhado]["imagePath"]);
+    data[telhado]["imagem"] = img;
+    telhados.push(data[telhado]);
+    console.log(telhados);
+  }
+}
+
 function setup() {
   imageMode(CORNER);
   createCanvas(windowWidth, 1400);
 
   nTorres = int(random(2, 35));
 
-  //Criar um valor de nAndares, ta
+  //Criar um valor de nAndares, scale, posXrandom
   for (let x = 0; x < nTorres; x++) {
     nAndares[x] = int(random(2, maxAndares));
     scale[x] = Math.round(5 + Math.random() * 10);
     randomPosX[x] = int(random(0, width - maxWidthBase));
-    scale[x] = Math.round(5 + Math.random() * 10);
 
     // Criar array 2D
     paisagem[x] = [];
@@ -92,10 +101,13 @@ function setup() {
       randomJanela[y] = random(janelas);
       randomPorta[y] = random(portas);
       randomBase[y] = random(bases);
+      randomTelhado[y] = random(telhados);
 
       //larguras e alturas dos elementos
       const baseWidth = round(randomBase[y].imagem.width / scale[x]);
       const baseHeight = round(randomBase[y].imagem.height / scale[x]);
+      const telhadoWidth = round(randomTelhado[y].imagem.width / scale[x]);
+      const telhadoHeight = round(randomTelhado[y].imagem.height / scale[x]);
       const portasWidth = round(randomPorta[y].imagem.width / scale[x]);
       const portasHeight = round(randomPorta[y].imagem.height / scale[x]);
       const janelasWidth = round(randomJanela[y].imagem.width / scale[x]);
@@ -106,9 +118,6 @@ function setup() {
       //posiçõs dos elementos
       posXPortas[y] = portasWidth + (availableWidth / 20) * round(random(19.4));
       posYPortas[y] = height - baseHeight * y - portasHeight;
-      //posXJanelas[y] = janelasWidth + (availableWidth / 10) * round(random(9.4));
-      //posXJanelas[y] = (availableWidth / 10) * round(random(9.4));
-      posYJanelas[y] = height - (y + 1) * baseHeight + 0.1 * baseHeight;
       posJanelas = [
         {
           posX: 1 * (baseWidth / 19),
@@ -143,6 +152,8 @@ function setup() {
         height - (y + 1) * baseHeight,
         baseWidth,
         baseHeight,
+        telhadoWidth,
+        telhadoHeight,
         false,
         true,
         1,
@@ -151,17 +162,13 @@ function setup() {
         portasWidth,
         portasHeight,
         int(random(1, 7)),
-        posXJanelas[y],
-        posYJanelas[y],
-        //posJanelas[y].posX,
-        //posJanelas[y].posY,
         posJanelas,
         janelasWidth,
         janelasHeight,
         randomJanela[y].imagem,
         randomPorta[y].imagem,
         randomBase[y].imagem,
-        0
+        randomTelhado[y].imagem
       );
       andares.push(andar);
       paisagem[x][y] = andar;
@@ -174,9 +181,16 @@ function draw() {
   //desenhar a paisagem
   for (let x = 0; x < nTorres; x++) {
     for (let y = 0; y < nAndares[x]; y++) {
-      paisagem[x][y].drawBase();
-      paisagem[x][y].drawJanelas();
-      paisagem[x][y].drawPortas();
+      if (y < nAndares[x] - 1) {
+        paisagem[x][y].drawBase();
+        paisagem[x][y].drawJanelas();
+      }
+      if (y == 0) {
+        paisagem[x][y].drawPortas();
+      }
+      if (y == nAndares[x] - 1) {
+        paisagem[x][y].drawTelhados();
+      }
     }
   }
   //print(andares);
@@ -189,6 +203,8 @@ class Andar {
     posY,
     baseWidth,
     baseHeight,
+    telhadoWidth,
+    telhadoHeight,
     temTelhado,
     temPorta,
     nPortas,
@@ -197,8 +213,6 @@ class Andar {
     portaWidth,
     portaHeight,
     nJanelas,
-    posXJanela,
-    posYJanela,
     posJanela,
     janelaWidth,
     janelaHeight,
@@ -211,6 +225,8 @@ class Andar {
     this.posY = posY;
     this.baseWidth = baseWidth;
     this.baseHeight = baseHeight;
+    this.telhadoWidth = telhadoWidth;
+    this.telhadoHeight = telhadoHeight;
     this.temTelhado = temTelhado;
     this.temPorta = temPorta;
     this.nPortas = nPortas;
@@ -219,8 +235,6 @@ class Andar {
     this.portaWidth = portaWidth;
     this.portaHeight = portaHeight;
     this.nJanelas = nJanelas;
-    this.posXJanela = posXJanela;
-    this.posYJanela = posYJanela;
     this.posJanela = posJanela;
     this.janelaWidth = janelaWidth;
     this.janelaHeight = janelaHeight;
@@ -257,6 +271,17 @@ class Andar {
       this.posYPorta,
       this.portaWidth,
       this.portaHeight
+    );
+    //print("PosXPorta" + this.posXPorta);
+  }
+  drawTelhados() {
+    //porta
+    image(
+      this.imgTelhado,
+      this.posX,
+      this.posY,
+      this.telhadoWidth,
+      this.telhadoHeight
     );
     //print("PosXPorta" + this.posXPorta);
   }
