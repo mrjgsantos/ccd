@@ -7,20 +7,21 @@ let andares = [];
 
 let posXPortas = [];
 let posYPortas = [];
+
 let posXJanelas = [];
 let posYJanelas = [];
+let posJanelas = [];
 
 let randomPorta = [];
 let randomBase = [];
 let randomJanela = [];
 
-let tamanho = [];
+let scale = [];
 let randomPosX = [];
 
 let maxAndares = 10;
 let maxWidthBase = 75;
 let nAndares = [];
-let randomScale = [];
 
 let nTorres;
 let paisagem = [];
@@ -30,30 +31,30 @@ function preload() {
   loadJSON("portas.json", loadPortas);
   loadJSON("bases.json", loadBases);
 }
+
+//Load Janelas
 async function loadJanelas(data) {
   for (const janela of Object.keys(data)) {
     let img = await loadImage(data[janela]["imagePath"]);
-    //img.resize(round(img.width / tamanho), 0);
     data[janela]["imagem"] = img;
-    data[janela]["resizeFactor"] = tamanho;
     janelas.push(data[janela]);
   }
 }
 
+//Load Portas
 async function loadPortas(data) {
   for (const porta of Object.keys(data)) {
     let img = await loadImage(data[porta]["imagePath"]);
     data[porta]["imagem"] = img;
-    data[porta]["resizeFactor"] = round(tamanho);
     portas.push(data[porta]);
   }
 }
 
+//Load Bases
 async function loadBases(data) {
   for (const base of Object.keys(data)) {
     let img = await loadImage(data[base]["imagePath"]);
     data[base]["imagem"] = img;
-    data[base]["resizeFactor"] = round(tamanho);
     bases.push(data[base]);
   }
 }
@@ -64,42 +65,79 @@ function setup() {
 
   nTorres = int(random(2, 35));
 
+  //Criar um valor de nAndares, ta
   for (let x = 0; x < nTorres; x++) {
     nAndares[x] = int(random(2, maxAndares));
-    tamanho[x] = Math.round(5 + Math.random() * 10);
+    scale[x] = Math.round(5 + Math.random() * 10);
     randomPosX[x] = int(random(0, width - maxWidthBase));
-    randomScale[x] = Math.round(5 + Math.random() * 10);
-    paisagem[x] = []; // create nested array
+    scale[x] = Math.round(5 + Math.random() * 10);
+
+    // Criar array 2D
+    paisagem[x] = [];
     for (let y = 0; y < maxAndares + 2; y++) {
       paisagem[x][y];
     }
   }
 
-  print(paisagem);
+  //print(paisagem);
   for (let x = 0; x < nTorres; x++) {
+    //atribuir a randomPosX e o Scale às ultimas posições do array
     paisagem[x][maxAndares] = randomPosX[x];
-    paisagem[x][maxAndares - 1] = randomScale[x];
+    paisagem[x][maxAndares - 1] = scale[x];
 
     for (let y = 0; y < nAndares[x]; y++) {
+      //escolher elementos random para cada andar
+
+      // print(posXYJanelas[0].posX);
       randomJanela[y] = random(janelas);
       randomPorta[y] = random(portas);
       randomBase[y] = random(bases);
-      const baseWidth = round(randomBase[y].imagem.width / tamanho[x]);
-      const baseHeight = round(randomBase[y].imagem.height / tamanho[x]);
-      const portasWidth = round(randomPorta[y].imagem.width / tamanho[x]);
-      const portasHeight = round(randomPorta[y].imagem.height / tamanho[x]);
-      const janelasWidth = round(randomJanela[y].imagem.width / tamanho[x]);
-      const janelasHeight = round(randomJanela[y].imagem.height / tamanho[x]);
 
+      //larguras e alturas dos elementos
+      const baseWidth = round(randomBase[y].imagem.width / scale[x]);
+      const baseHeight = round(randomBase[y].imagem.height / scale[x]);
+      const portasWidth = round(randomPorta[y].imagem.width / scale[x]);
+      const portasHeight = round(randomPorta[y].imagem.height / scale[x]);
+      const janelasWidth = round(randomJanela[y].imagem.width / scale[x]);
+      const janelasHeight = round(randomJanela[y].imagem.height / scale[x]);
       const availableWidth =
-        baseWidth - (randomPorta[y].imagem.width / tamanho[x]) * 2;
-      print("Available" + availableWidth);
-      posXPortas[y] = portasWidth + (availableWidth / 10) * round(random(9.4));
-      posYPortas[y] = height - baseHeight * y - portasHeight;
-      posXJanelas[y] =
-        janelasWidth + (availableWidth / 10) * round(random(9.4));
-      posYJanelas[y] = height - (y + 1) * baseHeight + 0.1 * baseHeight;
+        baseWidth - (randomPorta[y].imagem.width / scale[x]) * 2;
 
+      //posiçõs dos elementos
+      posXPortas[y] = portasWidth + (availableWidth / 20) * round(random(19.4));
+      posYPortas[y] = height - baseHeight * y - portasHeight;
+      //posXJanelas[y] = janelasWidth + (availableWidth / 10) * round(random(9.4));
+      //posXJanelas[y] = (availableWidth / 10) * round(random(9.4));
+      posYJanelas[y] = height - (y + 1) * baseHeight + 0.1 * baseHeight;
+      posJanelas = [
+        {
+          posX: 1 * (baseWidth / 19),
+          posY: height - (y + 1) * baseHeight + (1 * baseHeight) / 19,
+        },
+        {
+          posX: 7 * (baseWidth / 19),
+          posY: height - (y + 1) * baseHeight + (1 * baseHeight) / 19,
+        },
+        {
+          posX: 13 * (baseWidth / 19),
+          posY: height - (y + 1) * baseHeight + (1 * baseHeight) / 19,
+        },
+        {
+          posX: 1 * (baseWidth / 19),
+          posY: height - (y + 1) * baseHeight + (7 * baseHeight) / 19,
+        },
+        {
+          posX: 7 * (baseWidth / 19),
+          posY: height - (y + 1) * baseHeight + (7 * baseHeight) / 19,
+        },
+        {
+          posX: 13 * (baseWidth / 19),
+          posY: height - (y + 1) * baseHeight + (7 * baseHeight) / 19,
+        },
+      ];
+
+      //print(posJanelas[0].posX);
+      //criar andar
       let andar = new Andar(
         randomPosX[x],
         height - (y + 1) * baseHeight,
@@ -112,9 +150,12 @@ function setup() {
         posYPortas[y],
         portasWidth,
         portasHeight,
-        1,
+        int(random(1, 7)),
         posXJanelas[y],
         posYJanelas[y],
+        //posJanelas[y].posX,
+        //posJanelas[y].posY,
+        posJanelas,
         janelasWidth,
         janelasHeight,
         randomJanela[y].imagem,
@@ -126,17 +167,20 @@ function setup() {
       paisagem[x][y] = andar;
     }
   }
-  print(paisagem);
+  //print(paisagem);
 }
 function draw() {
-  background(220);
+  background(0, 255, 255);
+  //desenhar a paisagem
   for (let x = 0; x < nTorres; x++) {
     for (let y = 0; y < nAndares[x]; y++) {
-      paisagem[x][y].drawAndar();
+      paisagem[x][y].drawBase();
+      paisagem[x][y].drawJanelas();
+      paisagem[x][y].drawPortas();
     }
   }
-  print(andares);
-  noLoop();
+  //print(andares);
+  //noLoop();
 }
 
 class Andar {
@@ -155,6 +199,7 @@ class Andar {
     nJanelas,
     posXJanela,
     posYJanela,
+    posJanela,
     janelaWidth,
     janelaHeight,
     imgsJanelas,
@@ -176,6 +221,7 @@ class Andar {
     this.nJanelas = nJanelas;
     this.posXJanela = posXJanela;
     this.posYJanela = posYJanela;
+    this.posJanela = posJanela;
     this.janelaWidth = janelaWidth;
     this.janelaHeight = janelaHeight;
     this.imgsJanelas = imgsJanelas;
@@ -184,10 +230,26 @@ class Andar {
     this.imgTelhado = imgTelhado;
   }
 
-  drawAndar() {
+  drawBase() {
     //Base
     image(this.imgBase, this.posX, this.posY, this.baseWidth, this.baseHeight);
+  }
+  drawJanelas() {
+    //janela
+    //shuffle(posXYJanelas, true);
 
+    for (let i = 0; i < this.nJanelas; i++) {
+      image(
+        this.imgsJanelas,
+        //this.posX + this.posXJanela + i * 10,
+        this.posX + this.posJanela[i].posX,
+        this.posJanela[i].posY,
+        this.janelaWidth,
+        this.janelaHeight
+      );
+    }
+  }
+  drawPortas() {
     //porta
     image(
       this.imgsPortas,
@@ -196,15 +258,6 @@ class Andar {
       this.portaWidth,
       this.portaHeight
     );
-    print("PosXPorta" + this.posXPorta);
-
-    //janela
-    image(
-      this.imgsJanelas,
-      this.posX + this.posXJanela,
-      this.posYJanela,
-      this.janelaWidth,
-      this.janelaHeight
-    );
+    //print("PosXPorta" + this.posXPorta);
   }
 }

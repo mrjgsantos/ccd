@@ -12,12 +12,5 @@
     "estilo": "Barroco",
     "altura": "1",
     "largura": "2"
-  },
-  {
-    "nome": "Botanico",
-    "imagePath": "data/b3.png",
-    "estilo": "Barroco",
-    "altura": "1",
-    "largura": "2"
   }
 ]
