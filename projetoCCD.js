@@ -8,6 +8,7 @@ let andares = [];
 let posXPortas = [];
 let posYPortas = [];
 
+
 let posJanelas = [];
 
 let randomPorta = [];
