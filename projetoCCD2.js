@@ -82,25 +82,26 @@ function setup() {
   pop.initialize();
   //pop = new Population();
   //pop.initialize();
+  //print(pop);
 }
 
 function draw() {
-  background(0, 255, 255);
-  //desenhar a paisagem
-  for (let x = 0; x < nTorres; x++) {
-    for (let y = 0; y < nAndares[x]; y++) {
-      if (y < nAndares[x] - 1) {
-        paisagem[x][y].drawBase();
-        paisagem[x][y].drawJanelas();
+  // print(pop.getIndividual(0).getNTorres(i));
+  // print(pop.getIndividual(0).length);
+  //  print(pop.getNTorres(0));
+  for (let x = 0; x < pop.getIndividual(0).length; x++) {
+    for (let y = 0; y < pop.getIndividual(0)[x].floor; y++) {
+      if (y < pop.getIndividual(0)[x].floor - 1) {
+        pop.getIndividual(0)[x].floors[y].drawBase();
+        pop.getIndividual(0)[x].floors[y].drawJanelas();
       }
       if (y == 0) {
-        paisagem[x][y].drawPortas();
+        pop.getIndividual(0)[x].floors[y].drawPortas();
       }
-      if (y == nAndares[x] - 1) {
-        paisagem[x][y].drawTelhados();
+
+      if (y == pop.getIndividual(0)[x].floor - 1) {
+        pop.getIndividual(0)[x].floors[y].drawTelhados();
       }
     }
   }
-  //print(andares);
-  //noLoop();
 }
