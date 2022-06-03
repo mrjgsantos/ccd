@@ -1,84 +1,55 @@
 class Andar {
-  constructor(
-    posX,
-    posY,
-    baseWidth,
-    baseHeight,
-    telhadoWidth,
-    telhadoHeight,
-    nPortas,
-    posXPorta,
-    posYPorta,
-    portaWidth,
-    portaHeight,
-    nJanelas,
-    posJanela,
-    janelaWidth,
-    janelaHeight,
-    imgsJanelas,
-    imgsPortas,
-    imgBase,
-    imgTelhado
-  ) {
-    this.posX = posX;
-    this.posY = posY;
-    this.baseWidth = baseWidth;
-    this.baseHeight = baseHeight;
-    this.telhadoWidth = telhadoWidth;
-    this.telhadoHeight = telhadoHeight;
-    this.nPortas = nPortas;
-    this.posXPorta = posXPorta;
-    this.posYPorta = posYPorta;
-    this.portaWidth = portaWidth;
-    this.portaHeight = portaHeight;
-    this.nJanelas = nJanelas;
-    this.posJanela = posJanela;
-    this.janelaWidth = janelaWidth;
-    this.janelaHeight = janelaHeight;
-    this.imgsJanelas = imgsJanelas;
-    this.imgsPortas = imgsPortas;
-    this.imgBase = imgBase;
-    this.imgTelhado = imgTelhado;
+  constructor(base, door, window, roof) {
+    this.base = base;
+    this.door = door;
+    this.window = window;
+    this.roof = roof;
   }
 
-  drawBase() {
-    //Base
-    image(this.imgBase, this.posX, this.posY, this.baseWidth, this.baseHeight);
+  drawBase(pg) {
+    pg.image(
+      this.base.shape.imagem,
+      this.base.posX,
+      this.base.posY,
+      this.base.width,
+      this.base.height
+    );
   }
-  drawJanelas() {
+  drawJanelas(pg) {
     //janela
     //shuffle(posXYJanelas, true);
 
-    for (let i = 0; i < this.nJanelas; i++) {
-      image(
-        this.imgsJanelas,
-        //this.posX + this.posXJanela + i * 10,
-        this.posX + this.posJanela[i].posX,
-        this.posJanela[i].posY,
-        this.janelaWidth,
-        this.janelaHeight
+    for (let i = 0; i < 6; i++) {
+      pg.image(
+        this.window.shape.imagem,
+        this.base.posX + this.window.pos[i].posX,
+        this.window.pos[i].posY,
+        this.window.width,
+        this.window.height
       );
     }
   }
-  drawPortas() {
+
+  drawPortas(pg) {
     //porta
-    image(
-      this.imgsPortas,
-      this.posX + this.posXPorta,
-      this.posYPorta,
-      this.portaWidth,
-      this.portaHeight
+    pg.image(
+      this.door.shape.imagem,
+      this.base.posX + this.door.posX,
+      this.door.posY,
+      this.door.width,
+      this.door.height
     );
     //print("PosXPorta" + this.posXPorta);
   }
-  drawTelhados() {
+
+  drawTelhados(pg) {
     //porta
-    image(
-      this.imgTelhado,
-      this.posX,
-      this.posY,
-      this.telhadoWidth,
-      this.telhadoHeight
+    pg.image(
+      this.roof.shape.imagem,
+      this.base.posX,
+      this.base.posY,
+      this.roof.width,
+      this.roof.height
     );
     //print("PosXPorta" + this.posXPorta);
   }

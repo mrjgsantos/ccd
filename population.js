@@ -1,115 +1,126 @@
+//ADAPTADO
+
 class Population {
-  constructor() {}
+  constructor() {
+    this.pop = [];
+  }
 
-  initialize() {
-    for (let i = 0; i < 5; i++) {
-      nTorres = int(random(2, 5));
+  initialize(popSize = 15) {
+    for (let i = 0; i < popSize; i++) {
+      const nTorres = round(random(2, 50));
 
-      //Criar um valor de nAndares, scale, posXrandom
+      let individual = [];
       for (let x = 0; x < nTorres; x++) {
-        nAndares[x] = int(random(2, maxAndares));
-        scale[x] = Math.round(5 + Math.random() * 10);
-        randomPosX[x] = int(random(0, width - maxWidthBase));
-        torre = new Torre(nAndares[x], scale[x], randomPosX[x]);
+        const nAndares = round(random(2, maxAndares));
 
-        // Criar array 2D
-        paisagem[x] = [];
-        for (let y = 0; y < maxAndares + 2; y++) {
-          paisagem[x][y];
-        }
-      }
-      //print(paisagem);
-      for (let x = 0; x < nTorres; x++) {
-        //atribuir a randomPosX e o Scale às ultimas posições do array
-        paisagem[x][maxAndares + 2] = torre.posX;
-        paisagem[x][maxAndares + 1] = torre.scale;
-        //console.log(torre.posX);
-        for (let y = 0; y < nAndares[x]; y++) {
-          //escolher elementos random para cada andar
+        //const nAndares = 5;
+        const s = round(5 + Math.random() * 10);
+        const randomPosX = round(random(0, width));
+        const tower = {
+          scale: s,
+          floor: nAndares,
+          maxFloors: maxAndares,
+          floors: new Array(maxAndares).fill(null),
+        };
 
-          // print(posXYJanelas[0].posX);
-          randomJanela[y] = random(janelas);
-          randomPorta[y] = random(portas);
-          randomBase[y] = random(bases);
-          randomTelhado[y] = random(telhados);
+        // const torre = new Torre(x, scale, nAndares);
+        for (let y = 0; y < nAndares; y++) {
+          const base = {
+            shape: random(bases),
+            width: null,
+            height: null,
+            posX: randomPosX,
+            posY: null,
+          };
+          // print(x);
+          base.width = round(base.shape.imagem.width / tower.scale);
+          base.height = round(base.shape.imagem.height / tower.scale);
+          base.posY = height - (y + 1) * base.height;
 
-          //larguras e alturas dos elementos
-          const baseWidth = round(randomBase[y].imagem.width / scale[x]);
-          const baseHeight = round(randomBase[y].imagem.height / scale[x]);
-          const telhadoWidth = round(randomTelhado[y].imagem.width / scale[x]);
-          const telhadoHeight = round(
-            randomTelhado[y].imagem.height / scale[x]
-          );
-          const portasWidth = round(randomPorta[y].imagem.width / scale[x]);
-          const portasHeight = round(randomPorta[y].imagem.height / scale[x]);
-          const janelasWidth = round(randomJanela[y].imagem.width / scale[x]);
-          const janelasHeight = round(randomJanela[y].imagem.height / scale[x]);
+          const door = {
+            shape: random(portas),
+            width: null,
+            height: null,
+            posX: null,
+            posY: null,
+          };
+
+          door.width = round(door.shape.imagem.width / tower.scale);
           const availableWidth =
-            baseWidth - (randomPorta[y].imagem.width / scale[x]) * 2;
+            base.width - (door.shape.imagem.width / tower.scale) * 2;
+          door.height = round(door.shape.imagem.height / tower.scale);
+          door.posX = door.width + (availableWidth / 20) * round(random(19.4));
+          door.posY = height - base.height * y - door.height;
 
-          //posiçõs dos elementos
-          posXPortas[y] =
-            portasWidth + (availableWidth / 20) * round(random(19.4));
-          posYPortas[y] = height - baseHeight * y - portasHeight;
-          posJanelas = [
+          const window = {
+            shape: random(janelas),
+            width: null,
+            height: null,
+            pos: [],
+          };
+
+          window.width = round(window.shape.imagem.width / tower.scale);
+          window.height = round(window.shape.imagem.height / tower.scale);
+          window.pos = [
             {
-              posX: 1 * (baseWidth / 19),
-              posY: height - (y + 1) * baseHeight + (1 * baseHeight) / 19,
+              posX: 1 * (base.width / 19),
+              posY: height - (y + 1) * base.height + (1 * base.height) / 19,
             },
             {
-              posX: 7 * (baseWidth / 19),
-              posY: height - (y + 1) * baseHeight + (1 * baseHeight) / 19,
+              posX: 7 * (base.width / 19),
+              posY: height - (y + 1) * base.height + (1 * base.height) / 19,
             },
             {
-              posX: 13 * (baseWidth / 19),
-              posY: height - (y + 1) * baseHeight + (1 * baseHeight) / 19,
+              posX: 13 * (base.width / 19),
+              posY: height - (y + 1) * base.height + (1 * base.height) / 19,
             },
             {
-              posX: 1 * (baseWidth / 19),
-              posY: height - (y + 1) * baseHeight + (7 * baseHeight) / 19,
+              posX: 1 * (base.width / 19),
+              posY: height - (y + 1) * base.height + (7 * base.height) / 19,
             },
             {
-              posX: 7 * (baseWidth / 19),
-              posY: height - (y + 1) * baseHeight + (7 * baseHeight) / 19,
+              posX: 7 * (base.width / 19),
+              posY: height - (y + 1) * base.height + (7 * base.height) / 19,
             },
             {
-              posX: 13 * (baseWidth / 19),
-              posY: height - (y + 1) * baseHeight + (7 * baseHeight) / 19,
+              posX: 13 * (base.width / 19),
+              posY: height - (y + 1) * base.height + (7 * base.height) / 19,
             },
           ];
 
-          //print(posJanelas[0].posX);
-          //criar andar
-          let andar = new Andar(
-            randomPosX[x],
-            height - (y + 1) * baseHeight,
-            baseWidth,
-            baseHeight,
-            telhadoWidth,
-            telhadoHeight,
-            1,
-            posXPortas[y],
-            posYPortas[y],
-            portasWidth,
-            portasHeight,
-            int(random(1, 7)),
-            posJanelas,
-            janelasWidth,
-            janelasHeight,
-            randomJanela[y].imagem,
-            randomPorta[y].imagem,
-            randomBase[y].imagem,
-            randomTelhado[y].imagem
-          );
-          andares.push(andar);
-          print(andares);
-          paisagem[x][y] = andar;
-        }
-      }
-    }
-    //print(paisagem);
-  }
+          const roof = {
+            shape: random(telhados),
+            width: null,
+            height: null,
+          };
 
+          roof.width = round(roof.shape.imagem.width / tower.scale);
+          roof.height = round(roof.shape.imagem.height / tower.scale);
+          const andar = new Andar(base, door, window, roof);
+
+          //andar.drawBase();
+          //tower.floors.push(andar);
+          tower.floors[y] = new Andar(base, door, window, roof);
+          //print(tower.floors[0].base.shape.imagem);
+        }
+        individual.push(tower);
+        individual.length;
+      }
+
+      this.pop.push(individual);
+    }
+    console.group(`Initial Population`);
+    this.pop.forEach(function (el, i) {
+      console.info(`individual no. ${i} (no. towers ${el.length})`, el);
+    });
+    console.groupEnd();
+  }
+  getIndividual(i) {
+    return this.pop[i];
+  }
+  getNTorres(i) {
+    return this.nTorres[i];
+  }
   evolve() {}
   sortIndividualsByFitness() {}
 }

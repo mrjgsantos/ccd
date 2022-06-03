@@ -30,6 +30,9 @@ let nAndares = [];
 let nTorres;
 let paisagem = [];
 
+let pg = [];
+let pgAtual = 0;
+
 function preload() {
   loadJSON("janelas.json", loadJanelas);
   loadJSON("portas.json", loadPortas);
@@ -76,32 +79,51 @@ async function loadTelhados(data) {
 function setup() {
   imageMode(CORNER);
 
-  createCanvas(windowWidth, 1400);
+  createCanvas(windowWidth, windowHeight);
 
   pop = new Population();
   pop.initialize();
-  //pop = new Population();
-  //pop.initialize();
-  //print(pop);
+
+  for (let i = 0; i < pop.pop.length; i++) {
+    pg[i] = createGraphics(windowWidth, windowHeight);
+    for (let x = 0; x < pop.getIndividual(i).length; x++) {
+      for (let y = 0; y < pop.getIndividual(i)[x].floor; y++) {
+        if (y < pop.getIndividual(i)[x].floor - 1) {
+          pop.getIndividual(i)[x].floors[y].drawBase(pg[i]);
+          pop.getIndividual(i)[x].floors[y].drawJanelas(pg[i]);
+        }
+        if (y == 0) {
+          pop.getIndividual(i)[x].floors[y].drawPortas(pg[i]);
+        }
+
+        if (y == pop.getIndividual(i)[x].floor - 1) {
+          pop.getIndividual(i)[x].floors[y].drawTelhados(pg[i]);
+        }
+      }
+    }
+  }
 }
 
 function draw() {
-  // print(pop.getIndividual(0).getNTorres(i));
-  // print(pop.getIndividual(0).length);
-  //  print(pop.getNTorres(0));
-  for (let x = 0; x < pop.getIndividual(0).length; x++) {
-    for (let y = 0; y < pop.getIndividual(0)[x].floor; y++) {
-      if (y < pop.getIndividual(0)[x].floor - 1) {
-        pop.getIndividual(0)[x].floors[y].drawBase();
-        pop.getIndividual(0)[x].floors[y].drawJanelas();
-      }
-      if (y == 0) {
-        pop.getIndividual(0)[x].floors[y].drawPortas();
-      }
+  background(255);
+  for (let i = 0; i < pop.pop.length; i++) {
+    image(pg[pgAtual], 0, 0);
+  }
+  textSize(50);
+  text("Paisagem " + (pgAtual + 1), 50, 50);
+}
 
-      if (y == pop.getIndividual(0)[x].floor - 1) {
-        pop.getIndividual(0)[x].floors[y].drawTelhados();
-      }
+function keyPressed() {
+  if (pgAtual < pop.pop.length - 1) {
+    if (keyCode === RIGHT_ARROW) {
+      pgAtual++;
+      print(pgAtual);
+    }
+  }
+  if (pgAtual > 0) {
+    if (keyCode === LEFT_ARROW) {
+      pgAtual--;
+      print(pgAtual);
     }
   }
 }
