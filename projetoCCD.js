@@ -33,6 +33,9 @@ let paisagem = [];
 let pg = [];
 let pgAtual = 0;
 
+const crossoverP = 0.9;
+const mutatorP = 0.1;
+
 function preload() {
   loadJSON("janelas.json", loadJanelas);
   loadJSON("portas.json", loadPortas);
@@ -84,7 +87,7 @@ function setup() {
   pop = new Population();
   pop.initialize();
 
-  for (let i = 0; i < pop.pop.length; i++) {
+  /*for (let i = 0; i < pop.pop.length; i++) {
     pg[i] = createGraphics(windowWidth, windowHeight);
     for (let x = 0; x < pop.getIndividual(i).length; x++) {
       for (let y = 0; y < pop.getIndividual(i)[x].floor; y++) {
@@ -101,13 +104,15 @@ function setup() {
         }
       }
     }
-  }
+  }*/
 }
 
 function draw() {
   background(255);
   for (let i = 0; i < pop.pop.length; i++) {
-    image(pg[pgAtual], 0, 0);
+    const img = pop.getIndividual(i).getPhenotype();
+    image(img, 0, 0);
+    // image(img, (width / pop.pop.length) * i, 0, width / pop.pop.length, 100);
   }
   textSize(50);
   text("Paisagem " + (pgAtual + 1), 50, 50);

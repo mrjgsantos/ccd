@@ -1,15 +1,16 @@
 //ADAPTADO
 
 class Population {
-  constructor() {
+  constructor(popSize = 15) {
     this.pop = [];
+    this.popSize = popSize;
   }
 
-  initialize(popSize = 15) {
-    for (let i = 0; i < popSize; i++) {
+  initialize() {
+    for (let i = 0; i < this.popSize; i++) {
       const nTorres = round(random(2, 50));
 
-      let individual = [];
+      let individual = []; // TODO: object
       for (let x = 0; x < nTorres; x++) {
         const nAndares = round(random(2, maxAndares));
 
@@ -107,7 +108,7 @@ class Population {
         individual.length;
       }
 
-      this.pop.push(individual);
+      this.pop.push(new Individual(individual, 0));
     }
     console.group(`Initial Population`);
     this.pop.forEach(function (el, i) {
@@ -115,12 +116,44 @@ class Population {
     });
     console.groupEnd();
   }
+
   getIndividual(i) {
     return this.pop[i];
   }
+
+  /*getPhenotype(i, w = 500, h = 500) {
+    const pg = createGraphics(w, h);
+    for (let x = 0; x < this.getIndividual(i).length; x++) {
+      for (let y = 0; y < this.getIndividual(i)[x].floor; y++) {
+        if (y < this.getIndividual(i)[x].floor - 1) {
+          this.getIndividual(i)[x].floors[y].drawBase(pg);
+          this.getIndividual(i)[x].floors[y].drawJanelas(pg);
+        }
+        if (y == 0) {
+          this.getIndividual(i)[x].floors[y].drawPortas(pg);
+        }
+
+        if (y == pop.getIndividual(i)[x].floor - 1) {
+          this.getIndividual(i)[x].floors[y].drawTelhados(pg);
+        }
+      }
+    }
+    return pg;
+  }*/
+
   getNTorres(i) {
     return this.nTorres[i];
   }
-  evolve() {}
-  sortIndividualsByFitness() {}
+  evolve() {
+    //
+    // sort ind
+    // selecao parents -> torneiro
+    // random < crossosP
+    //
+  }
+
+  sortIndividualsByFitness() {
+    // this.pop.fitness
+    // sort array
+  }
 }
