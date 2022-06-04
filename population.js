@@ -1,7 +1,7 @@
 //ADAPTADO
 
 class Population {
-  constructor(popSize = 15) {
+  constructor(popSize = 4) {
     this.pop = [];
     this.popSize = popSize;
   }
@@ -97,7 +97,7 @@ class Population {
 
           roof.width = round(roof.shape.imagem.width / tower.scale);
           roof.height = round(roof.shape.imagem.height / tower.scale);
-          const andar = new Andar(base, door, window, roof);
+          //const andar = new Andar(base, door, window, roof);
 
           //andar.drawBase();
           //tower.floors.push(andar);
@@ -120,26 +120,6 @@ class Population {
   getIndividual(i) {
     return this.pop[i];
   }
-
-  /*getPhenotype(i, w = 500, h = 500) {
-    const pg = createGraphics(w, h);
-    for (let x = 0; x < this.getIndividual(i).length; x++) {
-      for (let y = 0; y < this.getIndividual(i)[x].floor; y++) {
-        if (y < this.getIndividual(i)[x].floor - 1) {
-          this.getIndividual(i)[x].floors[y].drawBase(pg);
-          this.getIndividual(i)[x].floors[y].drawJanelas(pg);
-        }
-        if (y == 0) {
-          this.getIndividual(i)[x].floors[y].drawPortas(pg);
-        }
-
-        if (y == pop.getIndividual(i)[x].floor - 1) {
-          this.getIndividual(i)[x].floors[y].drawTelhados(pg);
-        }
-      }
-    }
-    return pg;
-  }*/
 
   getNTorres(i) {
     return this.nTorres[i];

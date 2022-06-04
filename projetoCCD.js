@@ -86,36 +86,23 @@ function setup() {
 
   pop = new Population();
   pop.initialize();
-
-  /*for (let i = 0; i < pop.pop.length; i++) {
-    pg[i] = createGraphics(windowWidth, windowHeight);
-    for (let x = 0; x < pop.getIndividual(i).length; x++) {
-      for (let y = 0; y < pop.getIndividual(i)[x].floor; y++) {
-        if (y < pop.getIndividual(i)[x].floor - 1) {
-          pop.getIndividual(i)[x].floors[y].drawBase(pg[i]);
-          pop.getIndividual(i)[x].floors[y].drawJanelas(pg[i]);
-        }
-        if (y == 0) {
-          pop.getIndividual(i)[x].floors[y].drawPortas(pg[i]);
-        }
-
-        if (y == pop.getIndividual(i)[x].floor - 1) {
-          pop.getIndividual(i)[x].floors[y].drawTelhados(pg[i]);
-        }
-      }
-    }
-  }*/
 }
 
 function draw() {
   background(255);
+  const img = pop.getIndividual(pgAtual).getPhenotype();
+  image(img, 0, 0);
   for (let i = 0; i < pop.pop.length; i++) {
-    const img = pop.getIndividual(i).getPhenotype();
-    image(img, 0, 0);
-    // image(img, (width / pop.pop.length) * i, 0, width / pop.pop.length, 100);
+    pop.getIndividual(i).mutation();
   }
-  textSize(50);
-  text("Paisagem " + (pgAtual + 1), 50, 50);
+  rect(0, 0, windowWidth, 100);
+
+  textSize(30);
+  text(
+    "Paisagem " + (pgAtual + 1) + "       " + "Fitness: " + (pgAtual + 1),
+    50,
+    50
+  );
 }
 
 function keyPressed() {
