@@ -5,6 +5,9 @@ class Andar {
     this.window = window;
     this.roof = roof;
   }
+  drawBg(pg) {
+    pg.background(255);
+  }
 
   drawBase(pg) {
     pg.image(
@@ -44,6 +47,7 @@ class Andar {
 
   drawTelhados(pg) {
     //porta
+
     pg.image(
       this.roof.shape.imagem,
       this.base.posX,

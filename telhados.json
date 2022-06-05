@@ -5,5 +5,19 @@
     "estilo": "Barroco",
     "altura": "1",
     "largura": "2"
+  },
+  {
+    "nome": "Botanico",
+    "imagePath": "data/t2.png",
+    "estilo": "Barroco",
+    "altura": "1",
+    "largura": "2"
+  },
+  {
+    "nome": "Botanico",
+    "imagePath": "data/t3.png",
+    "estilo": "Barroco",
+    "altura": "1",
+    "largura": "2"
   }
 ]

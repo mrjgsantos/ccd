@@ -1,3 +1,7 @@
+let eliteSize = 1;
+let tournamentSize = 3;
+let crossoverRate = 0.7;
+
 let bases = [];
 let janelas = [];
 let telhados = [];
@@ -80,6 +84,7 @@ async function loadTelhados(data) {
 }
 
 function setup() {
+  //  frameRate(1);
   imageMode(CORNER);
 
   createCanvas(windowWidth, windowHeight);
@@ -93,29 +98,53 @@ function draw() {
   const img = pop.getIndividual(pgAtual).getPhenotype();
   image(img, 0, 0);
   for (let i = 0; i < pop.pop.length; i++) {
-    pop.getIndividual(i).mutation();
+    //pop.getIndividual(i).mutation();
+    //pop.getIndividual(i).crossover();
+    //pop.getIndividual().getCopy(i);
   }
   rect(0, 0, windowWidth, 100);
 
   textSize(30);
   text(
-    "Paisagem " + (pgAtual + 1) + "       " + "Fitness: " + (pgAtual + 1),
+    "Paisagem " +
+      (pgAtual + 1) +
+      "       " +
+      "Fitness: " +
+      pop.getIndividual(pgAtual).getFitness(),
     50,
     50
   );
+
+  //pop.sortIndividualsByFitness();
+  //pop.tournamentSelection();
 }
 
 function keyPressed() {
   if (pgAtual < pop.pop.length - 1) {
     if (keyCode === RIGHT_ARROW) {
       pgAtual++;
-      print(pgAtual);
     }
   }
   if (pgAtual > 0) {
     if (keyCode === LEFT_ARROW) {
       pgAtual--;
-      print(pgAtual);
     }
+  }
+
+  if (keyCode === UP_ARROW) {
+    if (pop.getIndividual(pgAtual).getFitness() < 1000) {
+      let fitnessAtual = pop.getIndividual(pgAtual).getFitness();
+      pop.getIndividual(pgAtual).setFitness(fitnessAtual + 100);
+    }
+  }
+
+  if (keyCode === DOWN_ARROW) {
+    if (pop.getIndividual(pgAtual).getFitness() > 0) {
+      let fitnessAtual = pop.getIndividual(pgAtual).getFitness();
+      pop.getIndividual(pgAtual).setFitness(fitnessAtual - 100);
+    }
+  }
+  if (keyCode === ENTER) {
+    pop.evolve();
   }
 }

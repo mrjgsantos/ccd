@@ -4,6 +4,8 @@ class Population {
   constructor(popSize = 4) {
     this.pop = [];
     this.popSize = popSize;
+    this.generations;
+    this.newGeneration = [];
   }
 
   initialize() {
@@ -97,12 +99,8 @@ class Population {
 
           roof.width = round(roof.shape.imagem.width / tower.scale);
           roof.height = round(roof.shape.imagem.height / tower.scale);
-          //const andar = new Andar(base, door, window, roof);
 
-          //andar.drawBase();
-          //tower.floors.push(andar);
           tower.floors[y] = new Andar(base, door, window, roof);
-          //print(tower.floors[0].base.shape.imagem);
         }
         individual.push(tower);
         individual.length;
@@ -110,30 +108,90 @@ class Population {
 
       this.pop.push(new Individual(individual, 0));
     }
-    console.group(`Initial Population`);
-    this.pop.forEach(function (el, i) {
-      console.info(`individual no. ${i} (no. towers ${el.length})`, el);
-    });
-    console.groupEnd();
+    this.generations = 0;
   }
 
   getIndividual(i) {
     return this.pop[i];
   }
 
-  getNTorres(i) {
-    return this.nTorres[i];
-  }
+  //----------------------------------------------ADICIONADO
   evolve() {
     //
     // sort ind
     // selecao parents -> torneiro
     // random < crossosP
     //
+
+    // Create a new a array to store the individuals that will be in the next generation
+    //let newGeneration = [];
+
+    // Sort individuals by fitness
+    this.sortIndividualsByFitness();
+
+    // Copy the elite to the next generation
+
+    for (let i = 0; i < eliteSize; i++) {
+      this.newGeneration[i] = this.pop[i].getCopy(i);
+      //print(newGeneration[i]);
+    }
+
+    // Create (breed) new individuals with crossover
+    //print(newGeneration.length);
+    print(this.pop.length);
+    for (let i = eliteSize; i < this.pop.length; i++) {
+      if (random(1) <= crossoverRate) {
+        let parent1 = this.tournamentSelection();
+        let parent2 = this.tournamentSelection();
+        let child = parent1.crossover(parent2);
+        this.newGeneration[i] = child;
+        print(this.newGeneration);
+      } else {
+        this.newGeneration[i] = this.tournamentSelection().getCopy();
+      }
+    }
+
+    // Mutate new individuals
+    for (let i = eliteSize; i < this.newGeneration.length; i++) {
+      this.newGeneration[i].mutation();
+    }
+    // Replace the individuals in the population with the new generation individuals
+    for (let i = 0; i < this.pop.length; i++) {
+      this.pop[i] = this.newGeneration[i];
+      //print(this.pop[i]);
+    }
+
+    // Reset the fitness of all individuals to 0, excluding elite
+    for (let i = 0; i < this.pop.length; i++) {
+      this.pop[i].setFitness(0);
+    }
+    // Increment the number of generations
+    this.generations++;
+  }
+
+  tournamentSelection() {
+    let tournament = [];
+    for (let i = 0; i < tournamentSize; i++) {
+      let randomIndex = int(random(0, this.pop.length));
+      tournament[i] = this.pop[randomIndex];
+    }
+    let fittest = tournament[0];
+    for (let i = 0; i < tournamentSize; i++) {
+      if (tournament[i].getFitness() < fittest.getFitness()) {
+        fittest = tournament[i];
+      }
+    }
+    return fittest;
   }
 
   sortIndividualsByFitness() {
     // this.pop.fitness
     // sort array
+    this.pop.sort((a, b) => b.getFitness() - a.getFitness());
+    //print(this.pop);
+  }
+
+  getNewGeneration() {
+    return this.newGeneration;
   }
 }
