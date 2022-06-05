@@ -169,6 +169,7 @@ class Population {
     this.generations++;
   }
 
+  //----------------------------------------------ADICIONADO
   tournamentSelection() {
     let tournament = [];
     for (let i = 0; i < tournamentSize; i++) {
@@ -183,14 +184,14 @@ class Population {
     }
     return fittest;
   }
-
+  //----------------------------------------------ADICIONADO
   sortIndividualsByFitness() {
     // this.pop.fitness
     // sort array
     this.pop.sort((a, b) => b.getFitness() - a.getFitness());
     //print(this.pop);
   }
-
+  //----------------------------------------------ADICIONADO
   getNewGeneration() {
     return this.newGeneration;
   }
