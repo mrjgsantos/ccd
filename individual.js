@@ -50,9 +50,9 @@ class Individual {
     // mudar o ornamento radnom
     //for(let i=0;i<)
 
-    for (let x = 0; x < this.genotype.length; x++) {
+    /*for (let x = 0; x < this.genotype.length; x++) {
       for (let y = 0; y < this.genotype[x].floor; y++) {
-        /*
+        
         let nAndarRandom = int(random(0, this.genotype[x].maxFloors));
         let andarRandom = this.genotype[x].floors[nAndarRandom];
         if (andarRandom != null) {
@@ -64,24 +64,34 @@ class Individual {
           ]);
           ornamentoRandom.var.shape = random(ornamentoRandom.el);
         }*/
-        //let andarRandom = random(this.genotype[x].floors[y]);
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //let andarRandom = random(this.genotype[x].floors[y]);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    for (let x = 0; x < this.genotype.length; x++) {
+      for (let y = 0; y < this.genotype[x].floor; y++) {
+        //escolhe o numero de um andar random dentro dos não nulos
         let nAndarRandom = int(random(0, this.genotype[x].floor));
+
+        //guarda o andarRandom com base no numero random
         let andarRandom = this.genotype[x].floors[nAndarRandom];
 
         let ornamentoRandom;
 
+        //caso seja o primeiro andar
         if (nAndarRandom == 0) {
-          let prob = random(0, 1);
-          if (prob < 0.5) {
+          let prob = random(0, 0.99);
+          if (prob <= 0.33) {
             ornamentoRandom = andarRandom.base;
             ornamentoRandom.shape = random(bases);
-          } else {
+          } else if (prob > 0.33 && prob <= 0.66) {
             ornamentoRandom = andarRandom.door;
             ornamentoRandom.shape = random(portas);
+          } else {
+            ornamentoRandom = andarRandom.window;
+            ornamentoRandom.shape = random(janelas);
           }
         }
 
+        //caso seja um andar do meio
         if (nAndarRandom > 0 && nAndarRandom < this.genotype[x].floor - 1) {
           let prob = random(0, 1);
 
@@ -94,14 +104,14 @@ class Individual {
           }
         }
 
+        //caso seja o ultimo andar
         if (nAndarRandom == this.genotype[x].floor - 1) {
           ornamentoRandom = andarRandom.roof;
           ornamentoRandom.shape = random(telhados);
         }
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       }
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   }
   //----------------------------------------------ADICIONADO
   setFitness(fitness) {

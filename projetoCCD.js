@@ -98,7 +98,7 @@ function draw() {
   const img = pop.getIndividual(pgAtual).getPhenotype();
   image(img, 0, 0);
   for (let i = 0; i < pop.pop.length; i++) {
-    //pop.getIndividual(i).mutation();
+    pop.getIndividual(i).mutation();
     //pop.getIndividual(i).crossover();
     //pop.getIndividual().getCopy(i);
   }
