@@ -41,7 +41,7 @@ const crossoverP = 0.9;
 const mutatorP = 0.1;
 
 let imgBg;
-let regular, bold;
+//let regular, bold;
 
 function preload() {
   loadJSON("janelas.json", loadJanelas);
@@ -49,8 +49,8 @@ function preload() {
   loadJSON("bases.json", loadBases);
   loadJSON("telhados.json", loadTelhados);
   imgBg = loadImage("data/bg.jpg");
-  regular = loadFont("data/regular.ttf");
-  bold = loadFont("data/bold.ttf");
+  //regular = loadFont("data/regular.ttf");
+  //bold = loadFont("data/bold.ttf");
 }
 
 //Load Janelas
@@ -92,7 +92,7 @@ async function loadTelhados(data) {
 function setup() {
   //  frameRate(1);
   imageMode(CORNER);
-  textFont(regular);
+  //textFont(regular);
   createCanvas(windowWidth, windowHeight);
 
   pop = new Population();
