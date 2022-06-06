@@ -40,11 +40,17 @@ let pgAtual = 0;
 const crossoverP = 0.9;
 const mutatorP = 0.1;
 
+let imgBg;
+let regular, bold;
+
 function preload() {
   loadJSON("janelas.json", loadJanelas);
   loadJSON("portas.json", loadPortas);
   loadJSON("bases.json", loadBases);
   loadJSON("telhados.json", loadTelhados);
+  imgBg = loadImage("data/bg.jpg");
+  regular = loadFont("data/regular.ttf");
+  bold = loadFont("data/bold.ttf");
 }
 
 //Load Janelas
@@ -86,7 +92,7 @@ async function loadTelhados(data) {
 function setup() {
   //  frameRate(1);
   imageMode(CORNER);
-
+  textFont(regular);
   createCanvas(windowWidth, windowHeight);
 
   pop = new Population();
@@ -95,31 +101,50 @@ function setup() {
 
 function draw() {
   background(255);
+
+  if (pop.getIndividual(pgAtual).ready !== true) return;
+
   const img = pop.getIndividual(pgAtual).getPhenotype();
   image(img, 0, 0);
+  /*
   for (let i = 0; i < pop.pop.length; i++) {
     pop.getIndividual(i).mutation();
-    //pop.getIndividual(i).crossover();
-    //pop.getIndividual().getCopy(i);
-  }
-  rect(0, 0, windowWidth, 100);
+  }*/
+
+  fill(245, 245, 245, 255);
+  strokeWeight(5);
+  rect(-4, -4, windowWidth + 8, 100 + 8);
 
   textSize(30);
+  fill(0);
+  print(pop.getGenerationNumber());
   text(
-    "Paisagem " +
+    "Landscape: " +
       (pgAtual + 1) +
-      "       " +
+      "    " +
       "Fitness: " +
-      pop.getIndividual(pgAtual).getFitness(),
+      pop.getIndividual(pgAtual).getFitness() +
+      "    " +
+      "Generation: " +
+      pop.getGenerationNumber(),
     50,
-    50
+    60
   );
 
-  //pop.sortIndividualsByFitness();
-  //pop.tournamentSelection();
+  text(
+    "Change Individual: <>" +
+      "    " +
+      "Change Fitness: ^" +
+      "    " +
+      "Evolve: Enter" +
+      "    " +
+      "Save Image: S",
+    1600,
+    60
+  );
 }
 
-function keyPressed() {
+async function keyPressed() {
   if (pgAtual < pop.pop.length - 1) {
     if (keyCode === RIGHT_ARROW) {
       pgAtual++;
@@ -145,6 +170,10 @@ function keyPressed() {
     }
   }
   if (keyCode === ENTER) {
-    pop.evolve();
+    await pop.evolve();
+  }
+
+  if (key === "s") {
+    pop.getIndividual(pgAtual).saveImage();
   }
 }

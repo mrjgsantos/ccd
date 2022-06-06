@@ -17,6 +17,7 @@ class Population {
         const nAndares = round(random(2, maxAndares));
 
         //const nAndares = 5;
+        // const s = round(5 + Math.random() * 10);
         const s = round(5 + Math.random() * 10);
         const randomPosX = round(random(0, width));
         const tower = {
@@ -105,8 +106,9 @@ class Population {
         individual.push(tower);
         individual.length;
       }
-
-      this.pop.push(new Individual(individual, 0));
+      const ind = new Individual(individual, 0);
+      ind.ready = true;
+      this.pop.push(ind);
     }
     this.generations = 0;
   }
@@ -116,56 +118,56 @@ class Population {
   }
 
   //----------------------------------------------ADICIONADO
-  evolve() {
-    //
-    // sort ind
-    // selecao parents -> torneiro
-    // random < crossosP
-    //
+  async evolve() {
+    for (let ind of this.pop) {
+      ind.ready = false;
+    }
 
     // Create a new a array to store the individuals that will be in the next generation
     //let newGeneration = [];
 
-    // Sort individuals by fitness
-    this.sortIndividualsByFitness();
+    // Sort individuals it y fitness
+    await this.sortIndividualsByFitness();
+    console.log("sort population by fitness");
 
     // Copy the elite to the next generation
 
     for (let i = 0; i < eliteSize; i++) {
-      this.newGeneration[i] = this.pop[i].getCopy(i);
+      this.newGeneration[i] = await this.pop[i].getCopy(i);
       //print(newGeneration[i]);
     }
 
     // Create (breed) new individuals with crossover
-    //print(newGeneration.length);
-    print(this.pop.length);
     for (let i = eliteSize; i < this.pop.length; i++) {
       if (random(1) <= crossoverRate) {
-        let parent1 = this.tournamentSelection();
-        let parent2 = this.tournamentSelection();
-        let child = parent1.crossover(parent2);
+        console.log(`sel offspring ${i}`);
+        let parent1 = await this.tournamentSelection();
+        let parent2 = await this.tournamentSelection();
+        let child = await parent1.crossover(parent2);
         this.newGeneration[i] = child;
-        print(this.newGeneration);
+        console.log(`new child ${i}: ${child.genotype}`);
       } else {
-        this.newGeneration[i] = this.tournamentSelection().getCopy();
+        this.newGeneration[i] = await this.tournamentSelection().getCopy();
+        console.log(`new child ${i}: ${this.newGeneration[i].genotype}`);
       }
     }
 
     // Mutate new individuals
     for (let i = eliteSize; i < this.newGeneration.length; i++) {
-      this.newGeneration[i].mutation();
+      await this.newGeneration[i].mutation();
+      console.log(`mutate child ${i}`);
     }
     // Replace the individuals in the population with the new generation individuals
-    for (let i = 0; i < this.pop.length; i++) {
-      this.pop[i] = this.newGeneration[i];
-      //print(this.pop[i]);
-    }
+    this.pop = this.newGeneration;
 
     // Reset the fitness of all individuals to 0, excluding elite
     for (let i = 0; i < this.pop.length; i++) {
-      this.pop[i].setFitness(0);
+      await this.pop[i].setFitness(0);
+      this.pop[i].ready = true;
+      console.log(`set fitness ${i}`);
     }
     // Increment the number of generations
+    console.log(`end of generation ${this.generations}`);
     this.generations++;
   }
 
@@ -186,13 +188,13 @@ class Population {
   }
   //----------------------------------------------ADICIONADO
   sortIndividualsByFitness() {
-    // this.pop.fitness
-    // sort array
     this.pop.sort((a, b) => b.getFitness() - a.getFitness());
-    //print(this.pop);
   }
   //----------------------------------------------ADICIONADO
   getNewGeneration() {
     return this.newGeneration;
+  }
+  getGenerationNumber() {
+    return this.generations;
   }
 }

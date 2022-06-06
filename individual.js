@@ -2,14 +2,14 @@ class Individual {
   constructor(genotype, fitness = 0) {
     this.genotype = genotype;
     this.fitness = fitness;
-    //this.pg = null;
-    this.pg = createGraphics(windowWidth, windowHeight);
+    this.pg = createGraphics(500, 500);
+    this.ready = false;
   }
 
-  getPhenotype(i /* w = 500, h = 500*/) {
-    //this.pg = createGraphics(w, h);
-    this.genotype[0].floors[0].drawBg(this.pg);
+  getPhenotype() {
+    this.pg = createGraphics(windowWidth, windowHeight);
     for (let x = 0; x < this.genotype.length; x++) {
+      this.genotype[0].floors[0].drawOverlay(this.pg);
       for (let y = 0; y < this.genotype[x].floor; y++) {
         if (y < this.genotype[x].floor - 1) {
           this.genotype[x].floors[y].drawBase(this.pg);
@@ -24,95 +24,62 @@ class Individual {
         }
       }
     }
+
     return this.pg;
   }
   getGenotype() {
     return this.genotype;
   }
   //----------------------------------------------ALTERADO
-  crossover(parent1) {
-    const child = new Individual(this.genotype, 0);
-    let crossoverPoint = int(random(1, this.genotype.length - 1));
-
-    for (let i = 0; i < crossoverPoint; i++) {
-      if (i < crossoverPoint) {
-        child.genotype[i] = parent1.genotype[i];
+  async crossover(parent1) {
+    return new Promise(async (resolve, reject) => {
+      const child = await new Individual([...this.genotype], 0);
+      let crossoverPoint = await int(random(1, this.genotype.length - 1));
+      for (let i = 0; i < crossoverPoint; i++) {
+        if (i < crossoverPoint) {
+          child.genotype[i] = parent1.genotype[i];
+        }
       }
+      console.log(`— inside crossover`);
+      resolve(child);
+    });
+  }
+
+  checkReady() {
+    let r = true;
+    for (let i = 0; i < this.genotype.length; i++) {
+      if (this.genotype[i] === undefined) r = false;
     }
-    return child;
+    this.ready = r;
+    return r;
   }
 
   //----------------------------------------------ADICIONADO
-  mutation() {
-    // para cada uma das torre random < mutationP
-    // escolher um andar random (dentro da torre)
-    // escolher um tipo de ornamento random
-    // mudar o ornamento radnom
-    //for(let i=0;i<)
-
-    /*for (let x = 0; x < this.genotype.length; x++) {
-      for (let y = 0; y < this.genotype[x].floor; y++) {
-        
-        let nAndarRandom = int(random(0, this.genotype[x].maxFloors));
-        let andarRandom = this.genotype[x].floors[nAndarRandom];
-        if (andarRandom != null) {
-          let ornamentoRandom = random([
-            { var: andarRandom.base, el: bases },
-            { var: andarRandom.door, el: portas },
-            { var: andarRandom.roof, el: telhados },
-            { var: andarRandom.window, el: janelas },
-          ]);
-          ornamentoRandom.var.shape = random(ornamentoRandom.el);
-        }*/
-    //let andarRandom = random(this.genotype[x].floors[y]);
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    for (let x = 0; x < this.genotype.length; x++) {
-      for (let y = 0; y < this.genotype[x].floor; y++) {
-        //escolhe o numero de um andar random dentro dos não nulos
-        let nAndarRandom = int(random(0, this.genotype[x].floor));
-
-        //guarda o andarRandom com base no numero random
-        let andarRandom = this.genotype[x].floors[nAndarRandom];
-
-        let ornamentoRandom;
-
-        //caso seja o primeiro andar
-        if (nAndarRandom == 0) {
-          let prob = random(0, 0.99);
-          if (prob <= 0.33) {
-            ornamentoRandom = andarRandom.base;
-            ornamentoRandom.shape = random(bases);
-          } else if (prob > 0.33 && prob <= 0.66) {
-            ornamentoRandom = andarRandom.door;
-            ornamentoRandom.shape = random(portas);
-          } else {
-            ornamentoRandom = andarRandom.window;
-            ornamentoRandom.shape = random(janelas);
+  async mutation() {
+    return new Promise(async (resolve, reject) => {
+      for (let x = 0; x < this.genotype.length; x++) {
+        for (let y = 0; y < 10; y++) {
+          //for (let y = 0; y < this.genotype[x].floor; y++) {
+          if (this.genotype[x] !== null && this.genotype[x] !== undefined) {
+            let nAndarRandom = await int(random(0, this.genotype[x].maxFloors));
+            let andarRandom = this.genotype[x].floors[nAndarRandom];
+            if (andarRandom !== undefined && andarRandom !== null) {
+              let ornamentoRandom = await random([
+                { var: andarRandom.base, el: bases },
+                { var: andarRandom.door, el: portas },
+                { var: andarRandom.roof, el: telhados },
+                { var: andarRandom.window, el: janelas },
+              ]);
+              ornamentoRandom.var.shape = await random(ornamentoRandom.el);
+            }
           }
-        }
-
-        //caso seja um andar do meio
-        if (nAndarRandom > 0 && nAndarRandom < this.genotype[x].floor - 1) {
-          let prob = random(0, 1);
-
-          if (prob < 0.5) {
-            ornamentoRandom = andarRandom.base;
-            ornamentoRandom.shape = random(bases);
-          } else {
-            ornamentoRandom = andarRandom.window;
-            ornamentoRandom.shape = random(janelas);
-          }
-        }
-
-        //caso seja o ultimo andar
-        if (nAndarRandom == this.genotype[x].floor - 1) {
-          ornamentoRandom = andarRandom.roof;
-          ornamentoRandom.shape = random(telhados);
         }
       }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      resolve(true);
+      console.log(`— inside mutation`);
+    });
   }
+
   //----------------------------------------------ADICIONADO
   setFitness(fitness) {
     this.fitness = fitness;
@@ -123,11 +90,10 @@ class Individual {
   }
   //----------------------------------------------ADICIONADO
   getCopy() {
-    let copy;
-    for (let x = 0; x < this.genotype.length; x++) {
-      copy = new Individual(this.genotype[x], this.fitness);
-    }
-    //print(copy);
+    let copy = new Individual([...this.genotype], this.fitness);
     return copy;
+  }
+  saveImage() {
+    save(this.pg, "paisagem", "jpg");
   }
 }

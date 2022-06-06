@@ -7,6 +7,12 @@ class Andar {
   }
   drawBg(pg) {
     pg.background(255);
+    pg.image(imgBg, 0, 0, windowWidth, windowHeight);
+  }
+
+  drawOverlay(pg) {
+    pg.fill(245, 245, 245, 3);
+    pg.rect(0, 0, windowWidth, windowHeight);
   }
 
   drawBase(pg) {
@@ -19,9 +25,6 @@ class Andar {
     );
   }
   drawJanelas(pg) {
-    //janela
-    //shuffle(posXYJanelas, true);
-
     for (let i = 0; i < 6; i++) {
       pg.image(
         this.window.shape.imagem,
@@ -34,7 +37,6 @@ class Andar {
   }
 
   drawPortas(pg) {
-    //porta
     pg.image(
       this.door.shape.imagem,
       this.base.posX + this.door.posX,
@@ -42,19 +44,15 @@ class Andar {
       this.door.width,
       this.door.height
     );
-    //print("PosXPorta" + this.posXPorta);
   }
 
   drawTelhados(pg) {
-    //porta
-
     pg.image(
       this.roof.shape.imagem,
       this.base.posX,
-      this.base.posY,
+      this.base.posY + 5,
       this.roof.width,
       this.roof.height
     );
-    //print("PosXPorta" + this.posXPorta);
   }
 }
